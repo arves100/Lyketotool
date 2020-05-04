@@ -1,0 +1,10 @@
+LIBRARY
+EXPORTS
+	l_lzo_compress
+	l_lzo_decompress
+	l_xtea_crypt
+	l_xtea_decrypt
+	l_get_buffer_size
+	l_copy_buffer
+	l_free_memory
+	l_lzo_get_size

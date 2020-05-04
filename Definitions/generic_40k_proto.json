@@ -1,0 +1,45 @@
+{
+	"Typedefs" : [
+		{
+			"name" : "limittype",
+			"content" : {
+				"Type" : "uint8",
+				"Value" : "int32",
+			},
+		},
+		{
+			"name" : "applytype",
+			"content" : {
+				"Type" : "uint8",
+				"Value" : "int32",
+			},
+		},
+	],
+	
+	"Item_Proto" : {
+		"Vnum" : "uint32",
+		"VnumRange" : "uint32",
+		"Name" : "string 25",
+		"LocalizedName" : "string 25",
+		"Type" : "uint8",
+		"SubType" : "uint8",
+		"Weight" : "uint8",
+		"Size" : "uint8",
+		"AntiFlags" : "uint32",
+		"Flags" : "uint32",
+		"WearFlags" : "uint32",
+		"ImmuneFlags" : "uint32",
+		"Gold" : "uint32",
+		"ShopBuyPrice" : "uint32",
+		"Limit" : "limittype 2",
+		"Apply" : "applytype 3",
+		"Value" : "int32 6",
+		"Socket" : "int32 3",
+		"RefinedVnum" : "uint32",
+		"RefineSet" : "int16",
+		"AlterToMagicItemPercent" : "uint8",
+		"Specular" : "uint8",
+		"GainSocketPercent" : "uint8",
+	}
+
+}
