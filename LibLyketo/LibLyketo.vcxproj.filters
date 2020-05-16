@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lzokay">
+      <UniqueIdentifier>{7ea6c083-0c8a-461f-b559-39e7847b87d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Algorithms">
+      <UniqueIdentifier>{634c3953-06c6-4d7d-a2af-ba0377e6e7dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{39bbc802-7225-4f2b-885f-6bec6666f545}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Formats">
+      <UniqueIdentifier>{5c8079b5-d747-46a7-9afe-e5793d9a4873}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lzokay\lzokay.cpp">
+      <Filter>lzokay</Filter>
+    </ClCompile>
+    <ClCompile Include="CompressAlgorithm_Lzo1x.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="xtea.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="CryptedObject.cpp">
+      <Filter>Formats</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lzokay\lzokay.hpp">
+      <Filter>lzokay</Filter>
+    </ClInclude>
+    <ClInclude Include="CompressAlgorithms.hpp">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="BitConvert.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="xtea.hpp">
+      <Filter>Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="MIPX.hpp">
+      <Filter>Formats</Filter>
+    </ClInclude>
+    <ClInclude Include="CryptedObject.hpp">
+      <Filter>Formats</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
