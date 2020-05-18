@@ -1,6 +1,0 @@
-[submodule "Lyketo.Unsafe/lzokay"]
-	path = Lyketo.Unsafe/lzokay
-	url = https://github.com/jackoalan/lzokay
-[submodule "LibLyketo/lzokay"]
-	path = LibLyketo/lzokay
-	url = https://github.com/jackoalan/lzokay
