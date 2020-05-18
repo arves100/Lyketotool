@@ -1,3 +1,7 @@
+/*!
+	@file CompressAlgorithms.hpp
+	Definition of multiple algorithms that works with a CryptedObject.
+*/
 #pragma once
 
 #include <stdint.h>

@@ -147,18 +147,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CompressAlgorithm_Lzo1x.cpp" />
+    <ClCompile Include="CompressAlgorithms.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="CryptedObject.cpp" />
     <ClCompile Include="lzokay\lzokay.cpp" />
-    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="Proto.cpp" />
     <ClCompile Include="xtea.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitConvert.hpp" />
+    <ClInclude Include="Utility.hpp" />
     <ClInclude Include="CompressAlgorithms.hpp" />
+    <ClInclude Include="Config.hpp" />
     <ClInclude Include="CryptedObject.hpp" />
-    <ClInclude Include="Memory.hpp" />
-    <ClInclude Include="MIPX.hpp" />
+    <ClInclude Include="Proto.hpp" />
     <ClInclude Include="lzokay\lzokay.hpp" />
     <ClInclude Include="xtea.hpp" />
   </ItemGroup>

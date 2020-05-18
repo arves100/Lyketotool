@@ -18,16 +18,19 @@
     <ClCompile Include="lzokay\lzokay.cpp">
       <Filter>lzokay</Filter>
     </ClCompile>
-    <ClCompile Include="CompressAlgorithm_Lzo1x.cpp">
-      <Filter>Algorithms</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
     <ClCompile Include="xtea.cpp">
       <Filter>Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="CryptedObject.cpp">
+      <Filter>Formats</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CompressAlgorithms.cpp">
+      <Filter>Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="Proto.cpp">
       <Filter>Formats</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,20 +41,20 @@
     <ClInclude Include="CompressAlgorithms.hpp">
       <Filter>Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="BitConvert.hpp">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.hpp">
-      <Filter>Utility</Filter>
-    </ClInclude>
     <ClInclude Include="xtea.hpp">
       <Filter>Algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="MIPX.hpp">
-      <Filter>Formats</Filter>
-    </ClInclude>
     <ClInclude Include="CryptedObject.hpp">
       <Filter>Formats</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Proto.hpp">
+      <Filter>Formats</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.hpp">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

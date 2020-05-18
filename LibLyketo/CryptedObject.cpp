@@ -1,16 +1,14 @@
-/*
-	Project: LibLyketo
-	File: CryptedObject.cpp
-	Purpose: Defines
+/*!
+	@file CryptedObject.cpp
+	Implements a Crypted object format, used in raw EterPack and proto files.
 */
 #include "CryptedObject.hpp"
-#include "BitConvert.hpp"
+#include "Config.hpp"
+#include "Utility.hpp"
 #include "xtea.hpp"
 
-CryptedObject::CryptedObject() : m_dwFourCC(0), m_dwAfterCryptLength(0), m_dwAfterCompressLength(0), m_dwRealLength(0), m_dwForcedAlgorithm(0)
+CryptedObject::CryptedObject() : m_dwFourCC(0), m_dwAfterCryptLength(0), m_dwAfterCompressLength(0), m_dwRealLength(0)
 {
-	// Standard file formats
-	m_mAlgorithms[BitConvert::FromByteArray("MCOZ")] = std::make_unique<CompressAlgorithmLzo1x>();
 }
 
 CryptedObject::~CryptedObject()
@@ -23,16 +21,16 @@ bool CryptedObject::Decrypt(const uint8_t* pbInput, size_t nLength, const uint32
 	if (!pbInput || !adwKeys || nLength < 20)
 		return false;
 
-	m_dwFourCC = BitConvert::FromByteArray(pbInput);
+	m_dwFourCC = Utility::FromByteArray(pbInput);
 
-	auto it = m_mAlgorithms.find(m_dwFourCC);
+	 ICompressAlgorithm* algorithm = Config::Instance()->CryptedObject()->FindAlgorithm(m_dwFourCC);
 
-	if (it == m_mAlgorithms.end())
+	if (!algorithm)
 		return false;
 
-	m_dwAfterCryptLength = BitConvert::FromByteArray(pbInput + 4);
-	m_dwAfterCompressLength = BitConvert::FromByteArray(pbInput + 8);
-	m_dwRealLength = BitConvert::FromByteArray(pbInput + 12);
+	m_dwAfterCryptLength = Utility::FromByteArray(pbInput + 4);
+	m_dwAfterCompressLength = Utility::FromByteArray(pbInput + 8);
+	m_dwRealLength = Utility::FromByteArray(pbInput + 12);
 	std::vector<uint8_t> data;
 
 	if (m_dwRealLength < 1)
@@ -53,7 +51,7 @@ bool CryptedObject::Decrypt(const uint8_t* pbInput, size_t nLength, const uint32
 
 		XTEA::Decrypt(pbInput + 16, data.data(), m_dwAfterCryptLength, adwKeys, 32);
 
-		if (BitConvert::FromByteArray(data.data()) != m_dwFourCC) // Verify decryptation
+		if (Utility::FromByteArray(data.data()) != m_dwFourCC) // Verify decryptation
 		{
 			return false;
 		}
@@ -84,7 +82,7 @@ bool CryptedObject::Decrypt(const uint8_t* pbInput, size_t nLength, const uint32
 		m_vBuffer.reserve(m_dwRealLength);
 
 		size_t nRealLength = m_dwRealLength;
-		if (!it->second->Decrypt(inputData, m_vBuffer.data(), m_dwAfterCompressLength, &nRealLength))
+		if (!algorithm->Decrypt(inputData, m_vBuffer.data(), m_dwAfterCompressLength, &nRealLength))
 		{
 			return false;
 		}
@@ -121,23 +119,21 @@ bool CryptedObject::Encrypt(const uint8_t* pbInput, size_t nLength, const uint32
 	if (!pbInput || !adwKeys || nLength < 1)
 		return false;
 
-	auto it = m_mAlgorithms.find(m_dwForcedAlgorithm);
-	if (it == m_mAlgorithms.end())
-	{
-		it = m_mAlgorithms.begin(); // Pick the first one if an invalid was specified
-	}
+	ICompressAlgorithm* algorithm = Config::Instance()->CryptedObject()->GetForcedAlgorithmOrDefault(m_dwFourCC);
+
+	if (!algorithm)
+		return false;
 
 	m_dwRealLength = static_cast<uint32_t>(nLength);
-	m_dwFourCC = it->first;
 
-	size_t nCompressedSize = it->second->GetWrostSize(nLength);
+	size_t nCompressedSize = algorithm->GetWrostSize(nLength);
 
 	std::vector<uint8_t> data;
 	data.reserve(nCompressedSize);
 	data.resize(nCompressedSize);
 
 	// 1. Compress the data
-	if (!it->second->Encrypt(pbInput, data.data(), nLength, &nCompressedSize))
+	if (!algorithm->Encrypt(pbInput, data.data(), nLength, &nCompressedSize))
 	{
 		return false;
 	}
@@ -145,15 +141,10 @@ bool CryptedObject::Encrypt(const uint8_t* pbInput, size_t nLength, const uint32
 	m_dwAfterCompressLength = static_cast<uint32_t>(nCompressedSize);
 
 	// 2. Append encrypt FourCC
-	data.resize(data.size() + 4);
-	data.reserve(data.size() + 4);
+	data.resize(data.size());
+	data.reserve(data.size());
 
-	uint8_t tmp[4];
-	BitConvert::ToByteArray(m_dwFourCC, tmp);
-	data.insert(data.begin(), tmp[3]);
-	data.insert(data.begin(), tmp[2]);
-	data.insert(data.begin(), tmp[1]);
-	data.insert(data.begin(), tmp[0]);
+	Utility::AddToVector<uint32_t, uint8_t>(m_dwFourCC, data);
 
 	// 3. Encrypt data
 	m_dwAfterCryptLength = m_dwAfterCompressLength + 20;
@@ -163,43 +154,13 @@ bool CryptedObject::Encrypt(const uint8_t* pbInput, size_t nLength, const uint32
 	XTEA::Encrypt(data.data(), m_vBuffer.data(), m_dwAfterCryptLength, adwKeys, 32);
 
 	// 4. Store header
-	m_vBuffer.reserve(m_dwAfterCryptLength + 16);
-	m_vBuffer.resize(m_dwAfterCryptLength + 16);
+	m_vBuffer.reserve(m_dwAfterCryptLength);
+	m_vBuffer.resize(m_dwAfterCryptLength);
 
-	BitConvert::ToByteArray(m_dwRealLength, tmp);
-	data.insert(data.begin(), tmp[3]);
-	data.insert(data.begin(), tmp[2]);
-	data.insert(data.begin(), tmp[1]);
-	data.insert(data.begin(), tmp[0]);
-
-	BitConvert::ToByteArray(m_dwAfterCompressLength, tmp);
-	data.insert(data.begin(), tmp[3]);
-	data.insert(data.begin(), tmp[2]);
-	data.insert(data.begin(), tmp[1]);
-	data.insert(data.begin(), tmp[0]);
-
-	BitConvert::ToByteArray(m_dwAfterCryptLength, tmp);
-	data.insert(data.begin(), tmp[3]);
-	data.insert(data.begin(), tmp[2]);
-	data.insert(data.begin(), tmp[1]);
-	data.insert(data.begin(), tmp[0]);
-
-	BitConvert::ToByteArray(m_dwFourCC, tmp);
-	data.insert(data.begin(), tmp[3]);
-	data.insert(data.begin(), tmp[2]);
-	data.insert(data.begin(), tmp[1]);
-	data.insert(data.begin(), tmp[0]);
+	Utility::AddToVector<uint32_t, uint8_t>(m_dwRealLength, data);
+	Utility::AddToVector<uint32_t, uint8_t>(m_dwAfterCompressLength, data);
+	Utility::AddToVector<uint32_t, uint8_t>(m_dwAfterCryptLength, data);
+	Utility::AddToVector<uint32_t, uint8_t>(m_dwFourCC, data);
 
 	return true; 
-}
-
-void CryptedObject::AddAlgorithm(uint32_t dwFourcc, std::unique_ptr<ICompressAlgorithm> upcAlgorithm)
-{
-	m_mAlgorithms[dwFourcc] = std::unique_ptr<ICompressAlgorithm>(std::move(upcAlgorithm));
-}
-
-void CryptedObject::ForceAlgorithm(uint32_t dwFourcc)
-{
-	if (m_mAlgorithms.find(dwFourcc) != m_mAlgorithms.end())
-		m_dwForcedAlgorithm = dwFourcc;
 }

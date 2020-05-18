@@ -1,8 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <vector>
 
-class BitConvert
+class Utility
 {
 public:
 	inline static uint32_t FromByteArray(const uint8_t* pbIn)
@@ -21,5 +22,15 @@ public:
 		pbData[2] = (dwValue>>16) & 0xFF;
 		pbData[1] = (dwValue>>8) & 0xFF;
 		pbData[0] = dwValue & 0xFF;
+	}
+
+	template <typename T, typename K>
+	inline static void AddToVector(T value, std::vector<K>& v)
+	{
+		for (size_t i = 0; i < sizeof(value); i++)
+		{
+			v.insert(v.begin(), value & 0xFF);
+			value = value >> 8;
+		}
 	}
 };
