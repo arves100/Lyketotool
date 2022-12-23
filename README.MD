@@ -1,4 +1,7 @@
 # Lyketo
+
+**NOTICE:** This tool is no longer supported! A newer rewrite of this tool might appear in the near future and posted on the usual zones of the forums.
+
 A tool for messing around with Metin2 crypted file formats.
 
 ## Features
